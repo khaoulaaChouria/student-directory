@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: student-directory
+  labels:
+    app: student-directory
+spec:
+  replicas: 1   # SQLite: keep a single replica
+  strategy:
+    type: Recreate   # avoids two pods holding the RWO volume during updates
+  selector:
+    matchLabels:
+      app: student-directory
+  template:
+    metadata:
+      labels:
+        app: student-directory
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull   # created with kubectl, see README
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: app
+          # Replace OWNER with your lowercase GitHub username.
+          image: ghcr.io/khaoulaaChouria/student-directory:latest   # lowercase owner/repo
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
+          envFrom:
+            - configMapRef:
+                name: student-directory-config
+          env:
+            - name: APP_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: student-directory-secret
+                  key: APP_TOKEN
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: tmp
+              mountPath: /tmp
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 5000
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: student-directory-pvc
+        - name: tmp
+          emptyDir: {}

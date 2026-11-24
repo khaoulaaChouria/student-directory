@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: student-directory-config
+  labels:
+    app: student-directory
+data:
+  APP_TITLE: "Student Directory"
+  DB_PATH: "/data/students.db"

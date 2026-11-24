@@ -1,0 +1,17 @@
+# hostPath is for the local Docker Desktop teaching demo only (not production).
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: student-directory-pv
+  labels:
+    app: student-directory
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: manual
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /run/desktop/mnt/host/c/student-directory-data
+    type: DirectoryOrCreate
