@@ -16,8 +16,6 @@ spec:
       labels:
         app: student-directory
     spec:
-      imagePullSecrets:
-        - name: ghcr-pull   # created with kubectl, see README
       securityContext:
         runAsNonRoot: true
         runAsUser: 10001
