@@ -28,7 +28,7 @@ spec:
       containers:
         - name: app
           # Replace OWNER with your lowercase GitHub username.
-          image: ghcr.io/khaoulaaChouria/student-directory:latest   # lowercase owner/repo
+          image: ghcr.io/khaoulaachouria/student-directory:latest   # lowercase owner/repo
           imagePullPolicy: Always
           ports:
             - containerPort: 5000
