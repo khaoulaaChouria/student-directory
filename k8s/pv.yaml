@@ -13,5 +13,5 @@ spec:
   storageClassName: manual
   persistentVolumeReclaimPolicy: Retain
   hostPath:
-    path: /run/desktop/mnt/host/c/student-directory-data
+    path: /var/local/student-directory-data
     type: DirectoryOrCreate
